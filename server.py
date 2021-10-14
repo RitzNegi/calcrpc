@@ -2,29 +2,33 @@ import grpc
 from concurrent import futures
 import time
 
-import short_pb2
-import short_pb2_grpc
+# import the generated classes
+import calculator_pb2
+import calculator_pb2_grpc
 
-import short
+# import the original calculator.py
+import calculator
 
-class ShortServicer(short_pb2_grpc.ShortServicer):
+# create a class to define the server functions, derived from
+# calculator_pb2_grpc.CalculatorServicer
+class CalculatorServicer(calculator_pb2_grpc.CalculatorServicer):
 
     # calculator.square_root is exposed here
     # the request and response are of the data type
     # calculator_pb2.Number
-    def shortURLToId():
-        response = short_pb2.shortUrl()
-        response.value = short.shortURLToId(request.value)
+    def SquareRoot(self, request, context):
+        response = calculator_pb2.Number()
+        response.value = calculator.square_root(request.value)
         return response
 
 
 # create a gRPC server
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
-# use the generated function `add_ShortServicer_to_server`
+# use the generated function `add_CalculatorServicer_to_server`
 # to add the defined class to the server
-short_pb2_grpc.add_ShortServicer_to_server(
-        ShortServicer(), server)
+calculator_pb2_grpc.add_CalculatorServicer_to_server(
+        CalculatorServicer(), server)
 
 # listen on port 50051
 print('Starting server. Listening on port 50051.')
